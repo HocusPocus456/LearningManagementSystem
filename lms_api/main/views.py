@@ -8,9 +8,9 @@ from . import models
 class TutorList(generics.ListCreateAPIView):
    queryset = models.Tutor.objects.all()
    serializer_class = TutorSerializer
-   permission_classes = [permissions.IsAuthenticated]
+  # permission_classes = [permissions.IsAuthenticated]
 
 class TutorDetail(generics.RetrieveUpdateDestroyAPIView):
    queryset = models.Tutor.objects.all()
    serializer_class = TutorSerializer
-   permission_classes = [permissions.IsAuthenticated]
+   #permission_classes = [permissions.IsAuthenticated]
