@@ -5,3 +5,13 @@ class TutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Tutor
         fields = ['id','full_name','email','password','qualification','mobile_no','skills']
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CourseCategory
+        fields = ['id','title','description']
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Course
+        fields = ['id','category','tutor','title','description','featured_img','techs']
