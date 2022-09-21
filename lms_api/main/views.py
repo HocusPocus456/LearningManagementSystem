@@ -33,3 +33,12 @@ class CategoryList(generics.ListCreateAPIView):
 class CourseList(generics.ListCreateAPIView):
    queryset = models.Course.objects.all()
    serializer_class = CourseSerializer
+
+#SpecificTutorCourse
+class TutorCourseList(generics.ListCreateAPIView):
+   serializer_class = CourseSerializer
+
+   def get_queryset(self):
+      tutor_id = self.kwargs['tutor_id']
+      tutor = models.Tutor.objects.get(pk=tutor_id)
+      return models.Course.objects.filter(tutor=tutor)
