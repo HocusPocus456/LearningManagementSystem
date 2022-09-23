@@ -26,10 +26,22 @@ def tutor_login(request):
    except models.Tutor.DoesNotExist:
       tutorData=None
    if tutorData:
-      return JsonResponse({'bool':True,'tutor_id':tutorData.id})
+      if not tutorData.verify_status:
+         return JsonResponse({'bool':False,'msg':'Account is not verified!'})
+      else:
+         return JsonResponse({'bool':True,'tutor_id':tutorData.id})
+   else:
+      return JsonResponse({'bool':False, 'msg':'Invalid Email or Password!!!'})
+
+@csrf_exempt
+def verify_tutor_via_otp(request, tutor_id):
+   otp_digit = request.POST.get('otp_digit')
+   verify = models.Tutor.objects.filter(id=tutor_id, otp_digit=otp_digit).first()
+   if verify:
+      models.Tutor.objects.filter(id=tutor_id, otp_digit=otp_digit).update(verify_status=True)
+      return JsonResponse({'bool':True, 'tutor_id':verify.id})
    else:
       return JsonResponse({'bool':False})
-
 class CategoryList(generics.ListCreateAPIView):
    queryset = models.CourseCategory.objects.all()
    serializer_class = CategorySerializer

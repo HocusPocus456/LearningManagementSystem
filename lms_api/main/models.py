@@ -12,9 +12,14 @@ class Tutor(models.Model):
     qualification = models.CharField(max_length=200)
     mobile_no = models.CharField(max_length=13)
     skills = models.TextField()
+    verify_status = models.BooleanField(default=False)
+    otp_digit = models.CharField(max_length=10,null=True)
 
     class Meta:
         verbose_name_plural = "1. Tutors"
+
+    
+
 
 #Course Category model
 class CourseCategory(models.Model):
@@ -46,6 +51,8 @@ class Learner(models.Model):
     mobile_no = models.CharField(max_length=13)
     address = models.TextField()
     interested_categories = models.TextField()
+    verify_status = models.BooleanField(default=False)
+    otp_digit = models.CharField(max_length=10,null=True)
 
     class Meta:
         verbose_name_plural = "4. Learners"

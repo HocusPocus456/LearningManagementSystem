@@ -6,7 +6,7 @@ urlpatterns = [
     path('tutor/', views.TutorList.as_view()),
     path('tutor/<int:pk>/', views.TutorDetail.as_view()),
     path('tutor-login', views.tutor_login),
-
+    path('verify-tutor/<int:tutor_id>/', views.verify_tutor_via_otp),
     #Category
     path('category/', views.CategoryList.as_view()),
 
