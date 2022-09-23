@@ -1,3 +1,4 @@
+from statistics import mode
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -20,9 +21,12 @@ class TutorDetail(generics.RetrieveUpdateDestroyAPIView):
 def tutor_login(request):
    email = request.POST['email']
    passsword = request.POST['password']
-   tutorData = models.Tutor.objects.get(email=email,password=passsword)
+   try:
+      tutorData = models.Tutor.objects.get(email=email,password=passsword)
+   except models.Tutor.DoesNotExist:
+      tutorData=None
    if tutorData:
-      return JsonResponse({'bool':True})
+      return JsonResponse({'bool':True,'tutor_id':tutorData.id})
    else:
       return JsonResponse({'bool':False})
 
