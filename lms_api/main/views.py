@@ -20,7 +20,10 @@ class TutorDetail(generics.RetrieveUpdateDestroyAPIView):
 def tutor_login(request):
    email = request.POST['email']
    passsword = request.POST['password']
-   tutorData = models.Tutor.objects.get(email=email,password=passsword)
+   try:
+      tutorData = models.Tutor.objects.get(email=email,password=passsword)
+   except models.Tutor.DoesNotExist:
+      tutorData=None
    if tutorData:
       return JsonResponse({'bool':True, 'tutor_id': tutorData.id})
    else:
@@ -50,8 +53,20 @@ class ChapterList(generics.ListCreateAPIView):
    queryset = models.Chapter.objects.all()
    serializer_class = ChapterSerializer
 
+<<<<<<< HEAD
 # Learner Data
 class LearnerList(generics.ListCreateAPIView):
    queryset = models.Learner.objects.all()
    serializer_class = LearnerSerializer
   # permission_classes = [permissions.IsAuthenticated]
+=======
+#Chapter
+class CourseChapterList(generics.ListAPIView):
+   serializer_class = ChapterSerializer
+
+   def get_queryset(self):
+      course_id = self.kwargs['course_id']
+      course = models.Course.objects.get(pk=course_id)
+      return models.Chapter.objects.filter(course=course)
+ 
+>>>>>>> 73814c681a5a58880b9ef47cf1df934be45a43e2
