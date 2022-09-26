@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework import generics
 from rest_framework import permissions
-from .serializers import TutorSerializer, CategorySerializer, CourseSerializer, ChapterSerializer
+from .serializers import TutorSerializer, CategorySerializer, CourseSerializer, ChapterSerializer,LearnerSerializer
 from . import models
 class TutorList(generics.ListCreateAPIView):
    queryset = models.Tutor.objects.all()
@@ -49,3 +49,9 @@ class TutorCourseList(generics.ListCreateAPIView):
 class ChapterList(generics.ListCreateAPIView):
    queryset = models.Chapter.objects.all()
    serializer_class = ChapterSerializer
+
+# Learner Data
+class LearnerList(generics.ListCreateAPIView):
+   queryset = models.Learner.objects.all()
+   serializer_class = LearnerSerializer
+  # permission_classes = [permissions.IsAuthenticated]
