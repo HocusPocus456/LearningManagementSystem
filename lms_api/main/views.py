@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework import generics
 from rest_framework import permissions
-from .serializers import TutorSerializer, CategorySerializer, CourseSerializer, ChapterSerializer,LearnerSerializer
+from .serializers import TutorSerializer, CategorySerializer, CourseSerializer, ChapterSerializer
 from . import models
 class TutorList(generics.ListCreateAPIView):
    queryset = models.Tutor.objects.all()
@@ -48,18 +48,16 @@ class TutorCourseList(generics.ListCreateAPIView):
       tutor = models.Tutor.objects.get(pk=tutor_id)
       return models.Course.objects.filter(tutor=tutor)
 
+class TutorCourseDetail(generics.RetrieveUpdateDestroyAPIView):
+   queryset=models.Course.objects.all()
+   serializer_class = CourseSerializer
+
+
 #Chapter
 class ChapterList(generics.ListCreateAPIView):
    queryset = models.Chapter.objects.all()
    serializer_class = ChapterSerializer
 
-<<<<<<< HEAD
-# Learner Data
-class LearnerList(generics.ListCreateAPIView):
-   queryset = models.Learner.objects.all()
-   serializer_class = LearnerSerializer
-  # permission_classes = [permissions.IsAuthenticated]
-=======
 #Chapter
 class CourseChapterList(generics.ListAPIView):
    serializer_class = ChapterSerializer
@@ -69,4 +67,6 @@ class CourseChapterList(generics.ListAPIView):
       course = models.Course.objects.get(pk=course_id)
       return models.Chapter.objects.filter(course=course)
  
->>>>>>> 73814c681a5a58880b9ef47cf1df934be45a43e2
+class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
+   queryset=models.Chapter.objects.all()
+   serializer_class=ChapterSerializer
