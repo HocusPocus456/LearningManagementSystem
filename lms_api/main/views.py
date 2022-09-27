@@ -48,6 +48,11 @@ class TutorCourseList(generics.ListCreateAPIView):
       tutor = models.Tutor.objects.get(pk=tutor_id)
       return models.Course.objects.filter(tutor=tutor)
 
+class TutorCourseDetail(generics.RetrieveUpdateDestroyAPIView):
+   queryset=models.Course.objects.all()
+   serializer_class = CourseSerializer
+
+
 #Chapter
 class ChapterList(generics.ListCreateAPIView):
    queryset = models.Chapter.objects.all()
@@ -65,3 +70,4 @@ class CourseChapterList(generics.ListAPIView):
 class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
    queryset = models.Chapter.objects.all()
    serializer_class = ChapterSerializer
+   
