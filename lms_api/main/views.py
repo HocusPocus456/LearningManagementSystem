@@ -62,3 +62,6 @@ class CourseChapterList(generics.ListAPIView):
       course = models.Course.objects.get(pk=course_id)
       return models.Chapter.objects.filter(course=course)
  
+class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
+   queryset = models.Chapter.objects.all()
+   serializer_class = ChapterSerializer

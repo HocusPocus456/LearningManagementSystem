@@ -15,11 +15,15 @@ urlpatterns = [
 
     #Chapter
     path('chapter/', views.ChapterList.as_view()),
+    
+    #Specific Courses
+    path('chapter/<int:pk>/', views.ChapterDetailView.as_view()),
 
     #Teacher Courses
     path('tutor-courses/<int:tutor_id>', views.TutorCourseList.as_view()),
 
-    #Specific Courses
+
+    #Specific Courses Chapter
     path('course-chapters/<int:course_id>', views.CourseChapterList.as_view()),
 
 ]
