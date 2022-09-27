@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -5,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework import generics
 from rest_framework import permissions
-from .serializers import TutorSerializer, CategorySerializer, CourseSerializer, ChapterSerializer
+from .serializers import TutorSerializer, CategorySerializer, CourseSerializer, ChapterSerializer,LearnerSerializer
 from . import models
 class TutorList(generics.ListCreateAPIView):
    queryset = models.Tutor.objects.all()
@@ -39,6 +40,13 @@ class CourseList(generics.ListCreateAPIView):
    queryset = models.Course.objects.all()
    serializer_class = CourseSerializer
 
+   def get_queryset(self):
+      qs=super().get_queryset()
+      if 'result' in self.request.GET:
+         limit=int(self.request.GET['result'])
+         qs=models.Course.objects.all().order_by('-id')[:limit]
+         return qs
+
 #SpecificTutorCourse
 class TutorCourseList(generics.ListCreateAPIView):
    serializer_class = CourseSerializer
@@ -48,15 +56,16 @@ class TutorCourseList(generics.ListCreateAPIView):
       tutor = models.Tutor.objects.get(pk=tutor_id)
       return models.Course.objects.filter(tutor=tutor)
 
-class TutorCourseDetail(generics.RetrieveUpdateDestroyAPIView):
-   queryset=models.Course.objects.all()
-   serializer_class = CourseSerializer
-
-
 #Chapter
 class ChapterList(generics.ListCreateAPIView):
    queryset = models.Chapter.objects.all()
    serializer_class = ChapterSerializer
+
+# Learner Data
+class LearnerList(generics.ListCreateAPIView):
+   queryset = models.Learner.objects.all()
+   serializer_class = LearnerSerializer
+  # permission_classes = [permissions.IsAuthenticated]
 
 #Chapter
 class CourseChapterList(generics.ListAPIView):
@@ -66,8 +75,3 @@ class CourseChapterList(generics.ListAPIView):
       course_id = self.kwargs['course_id']
       course = models.Course.objects.get(pk=course_id)
       return models.Chapter.objects.filter(course=course)
- 
-class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
-   queryset = models.Chapter.objects.all()
-   serializer_class = ChapterSerializer
-   
