@@ -13,6 +13,9 @@ urlpatterns = [
     #Course
     path('course/', views.CourseList.as_view()),
 
+    #Course Detail
+    path('course/<int:pk>/', views.CourseDetailView.as_view()),
+
     #Chapter
     path('chapter/', views.ChapterList.as_view()),
 
@@ -22,7 +25,7 @@ urlpatterns = [
     #Specific Courses
     path('course-chapters/<int:course_id>', views.CourseChapterList.as_view()),
 
-#Learner 
+    #Learner 
     path('learner/', views.LearnerList.as_view()),
     path('learner-login',views.learner_login),
 ]

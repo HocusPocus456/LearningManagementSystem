@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -39,6 +40,18 @@ class CourseList(generics.ListCreateAPIView):
    queryset = models.Course.objects.all()
    serializer_class = CourseSerializer
 
+   def get_queryset(self):
+      qs=super().get_queryset()
+      if 'result' in self.request.GET:
+         limit=int(self.request.GET['result'])
+         qs=models.Course.objects.all().order_by('-id')[:limit]
+         return qs
+
+#Course Detail
+class CourseDetailView(generics.RetrieveAPIView):
+   queryset=models.Course.objects.all()
+   serializer_class=CourseSerializer
+
 #SpecificTutorCourse
 class TutorCourseList(generics.ListCreateAPIView):
    serializer_class = CourseSerializer
@@ -58,6 +71,10 @@ class LearnerList(generics.ListCreateAPIView):
    queryset = models.Learner.objects.all()
    serializer_class = LearnerSerializer
   # permission_classes = [permissions.IsAuthenticated]
+<<<<<<< HEAD
+=======
+
+>>>>>>> aafd83e2576d0e78806d96cf8aa2bc884f0e17ce
 #Chapter
 class CourseChapterList(generics.ListAPIView):
    serializer_class = ChapterSerializer
@@ -66,6 +83,7 @@ class CourseChapterList(generics.ListAPIView):
       course_id = self.kwargs['course_id']
       course = models.Course.objects.get(pk=course_id)
       return models.Chapter.objects.filter(course=course)
+<<<<<<< HEAD
  
 
 @csrf_exempt
@@ -80,3 +98,10 @@ def learner_login(request):
       return JsonResponse({'bool':True, 'learner_id': learnerData.id})
    else:
       return JsonResponse({'bool':False})
+=======
+
+#Chapter Detail
+class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
+   queryset=models.Chapter.objects.all()
+   serializer_class=ChapterSerializer
+>>>>>>> aafd83e2576d0e78806d96cf8aa2bc884f0e17ce

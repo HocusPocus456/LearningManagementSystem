@@ -4,6 +4,8 @@ from pyexpat import model
 from statistics import mode
 from tabnanny import verbose
 from django.db import models
+from django.core import serializers
+
 #Tutor Model
 class Tutor(models.Model):
     full_name = models.CharField(max_length=100)
@@ -26,6 +28,7 @@ class CourseCategory(models.Model):
 
     def __str__(self):
         return self.title
+
 #Course Model
 class Course(models.Model):
     category = models.ForeignKey(CourseCategory, on_delete = models.CASCADE)
@@ -37,9 +40,13 @@ class Course(models.Model):
     class Meta:
         verbose_name_plural = "3. Courses"
 
+    def related_videos(self):
+        related_videos=Course.objects.filter(techs__icontains=self.techs)
+        return serializers.serialize('json',related_videos)
+
 #Chapter Model
 class Chapter(models.Model):
-    course = models.ForeignKey(Course, on_delete = models.CASCADE)
+    course = models.ForeignKey(Course, on_delete = models.CASCADE, related_name='course_chapters')
     title = models.CharField(max_length=150)
     description = models.TextField() 
     video = models.FileField(upload_to='chapter_videos/', null=True)
