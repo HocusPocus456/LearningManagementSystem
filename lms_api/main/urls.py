@@ -31,4 +31,5 @@ urlpatterns = [
     
     #Learner 
     path('learner/', views.LearnerList.as_view()),
+    path('learner-login',views.learner_login),
 ]

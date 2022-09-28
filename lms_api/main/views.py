@@ -86,6 +86,20 @@ class CourseChapterList(generics.ListAPIView):
       course_id = self.kwargs['course_id']
       course = models.Course.objects.get(pk=course_id)
       return models.Chapter.objects.filter(course=course)
+ 
+
+@csrf_exempt
+def learner_login(request):
+   email = request.POST['email']
+   passsword = request.POST['password']
+   try:
+      learnerData = models.Learner.objects.get(email=email,password=passsword)
+   except models.Learner.DoesNotExist:
+      learnerData=None
+   if learnerData:
+      return JsonResponse({'bool':True, 'learner_id': learnerData.id})
+   else:
+      return JsonResponse({'bool':False})
 
 #Chapter Detail
 class ChapterDetailView(generics.RetrieveUpdateDestroyAPIView):
