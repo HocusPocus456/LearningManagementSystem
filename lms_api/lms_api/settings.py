@@ -85,7 +85,7 @@ DATABASES = {
     #}
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django1_lms',
+        'NAME': 'django_lms',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
