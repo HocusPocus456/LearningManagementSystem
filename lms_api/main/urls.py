@@ -14,17 +14,21 @@ urlpatterns = [
     path('course/', views.CourseList.as_view()),
 
     #Course Detail
-    path('course/<int:pk>/', views.CourseDetailView.as_view()),
-
-    #Chapter
-    path('chapter/', views.ChapterList.as_view()),
-
-    #Teacher Courses
-    path('tutor-courses/<int:tutor_id>', views.TutorCourseList.as_view()),
+    #path('course/<int:pk>', views.CourseDetailView.as_view()),
 
     #Specific Courses
     path('course-chapters/<int:course_id>', views.CourseChapterList.as_view()),
 
+    #Chapter
+    path('chapter/<int:pk>', views.ChapterDetailView.as_view()),
+
+    #Teacher Courses
+    path('tutor-courses/<int:tutor_id>', views.TutorCourseList.as_view()),
+
+    #Course Detail
+    path('tutor-course-detail/<int:pk>', views.TutorCourseDetail.as_view()),
+
+    
     #Learner 
     path('learner/', views.LearnerList.as_view()),
 ]

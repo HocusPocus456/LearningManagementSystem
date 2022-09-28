@@ -40,7 +40,7 @@ class Course(models.Model):
     class Meta:
         verbose_name_plural = "3. Courses"
 
-    def related_videos(self):
+def related_videos(self):
         related_videos=Course.objects.filter(techs__icontains=self.techs)
         return serializers.serialize('json',related_videos)
 
@@ -53,6 +53,7 @@ class Chapter(models.Model):
     remarks = models.TextField(null=True) 
     class Meta:
         verbose_name_plural = "4. Chapters"
+
 
 #Learner Model
 class Learner(models.Model):
