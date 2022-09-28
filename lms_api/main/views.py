@@ -53,13 +53,11 @@ class ChapterList(generics.ListCreateAPIView):
    queryset = models.Chapter.objects.all()
    serializer_class = ChapterSerializer
 
-<<<<<<< HEAD
 # Learner Data
 class LearnerList(generics.ListCreateAPIView):
    queryset = models.Learner.objects.all()
    serializer_class = LearnerSerializer
   # permission_classes = [permissions.IsAuthenticated]
-=======
 #Chapter
 class CourseChapterList(generics.ListAPIView):
    serializer_class = ChapterSerializer
@@ -69,4 +67,16 @@ class CourseChapterList(generics.ListAPIView):
       course = models.Course.objects.get(pk=course_id)
       return models.Chapter.objects.filter(course=course)
  
->>>>>>> 73814c681a5a58880b9ef47cf1df934be45a43e2
+
+@csrf_exempt
+def learner_login(request):
+   email = request.POST['email']
+   passsword = request.POST['password']
+   try:
+      learnerData = models.Learner.objects.get(email=email,password=passsword)
+   except models.Learner.DoesNotExist:
+      learnerData=None
+   if learnerData:
+      return JsonResponse({'bool':True, 'learner_id': learnerData.id})
+   else:
+      return JsonResponse({'bool':False})
