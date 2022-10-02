@@ -4,8 +4,9 @@ from . import models
 class TutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Tutor
-        fields = ['id','full_name','email','password','qualification','mobile_no','skills']
-
+        fields = ['id','full_name','email','password','qualification','mobile_no','skills','profile_img','tutor_courses']
+        depth=1
+        
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CourseCategory

@@ -1,3 +1,4 @@
+from xml.sax.handler import feature_external_ges
 from django.db import models
 # Create your models here.
 from pyexpat import model
@@ -10,13 +11,18 @@ from django.core import serializers
 class Tutor(models.Model):
     full_name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100,blank=True, null=True)
     qualification = models.CharField(max_length=200)
     mobile_no = models.CharField(max_length=13)
+    profile_img=models.ImageField(upload_to='tutor_profile_imgs/', null=True)
     skills = models.TextField()
 
     class Meta:
         verbose_name_plural = "1. Tutors"
+
+    def skill_list(self):
+        skill_list = self.skills.split(',')
+        return skill_list
 
 #Course Category model
 class CourseCategory(models.Model):
@@ -32,7 +38,7 @@ class CourseCategory(models.Model):
 #Course Model
 class Course(models.Model):
     category = models.ForeignKey(CourseCategory, on_delete = models.CASCADE)
-    tutor = models.ForeignKey(Tutor, on_delete = models.CASCADE)
+    tutor = models.ForeignKey(Tutor, on_delete = models.CASCADE, related_name="tutor_courses")
     title = models.CharField(max_length=150)
     description = models.TextField() 
     featured_img = models.ImageField(upload_to='course_imgs/', null=True)
