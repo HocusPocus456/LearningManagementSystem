@@ -6,7 +6,7 @@ from statistics import mode
 from tabnanny import verbose
 from django.db import models
 from django.core import serializers
-
+#import cv2 
 #Tutor Model
 class Tutor(models.Model):
     full_name = models.CharField(max_length=100)
@@ -24,6 +24,20 @@ class Tutor(models.Model):
         skill_list = self.skills.split(',')
         return skill_list
 
+#Total Tutor Courses
+    def total_tutor_courses(self):
+        total_courses = Course.objects.filter(tutor=self).count()
+        return total_courses
+
+#Total Tutor Chapters
+    def total_tutor_chapters(self):
+        total_chapters = Chapter.objects.filter(course__tutor=self).count()
+        return total_chapters
+
+#Total Tutor Learners
+    def total_tutor_learners(self):
+        total_learners = LearnerCourseEnrollment.objects.filter(course__tutor=self).count()
+        return total_learners
 #Course Category model
 class CourseCategory(models.Model):
     title = models.CharField(max_length=150)
@@ -45,9 +59,25 @@ class Course(models.Model):
     techs = models.TextField(null=True) 
     class Meta:
         verbose_name_plural = "3. Courses"
+
     def related_videos(self):
-        related_videos=Course.objects.filter(techs__icontains=self.techs)
+        related_videos=Course.objects.filter(techs__icontains=self.techs).exclude(id=self.id)
         return serializers.serialize('json',related_videos)
+
+    def tech_list(self):
+        tech_list = self.techs.split(',')
+        return tech_list
+
+    def total_enrolled_learners(self):
+        total_enrolled_learners=LearnerCourseEnrollment.objects.filter(course=self).count()
+        return total_enrolled_learners
+
+    def course_rating(self):
+        course_rating=CourseRating.objects.filter(course=self).aggregate(avg_rating=models.Avg('rating'))
+        return course_rating['avg_rating']
+
+    def __str__(self):
+        return self.title
 
 #Chapter Model
 class Chapter(models.Model):
@@ -59,7 +89,22 @@ class Chapter(models.Model):
     class Meta:
         verbose_name_plural = "4. Chapters"
 
-
+    '''def chapter_duration(self):
+        seconds = 0
+        import cv2
+        cap = cv2.VideoCapture(self.video.path)
+        fps = cap.get(cv2,CAP_PROP_FPS)
+        frame_count = int(cap.get(cv2,CAP_PROP_FRAME_COUNT))
+        if frame_count:
+            duration = frame_count/fps
+            print('fps =' + str(fps))
+            print('number of frames = '+ str(frame_count))
+            print('duration (S) = '+str(duration))
+            minutes = int(duration/60)
+            seconds = duration%60
+            print('duration (M:S) = '+ str(minutes)+':' + str(seconds) )
+        return seconds
+'''
 #Learner Model
 class Learner(models.Model):
     full_name = models.CharField(max_length=100)
@@ -68,5 +113,31 @@ class Learner(models.Model):
     username = models.CharField(max_length=200)
     interested_subjects = models.TextField()
 
+    def __str__(self):
+        return self.full_name
+
     class Meta:
         verbose_name_plural = "5. Learners"
+
+# LearnerCourseEnrollment
+class LearnerCourseEnrollment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    learner = models.ForeignKey(Learner,on_delete=models.CASCADE)
+    enrolled_time=models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural ="6. Enrolled Courses"
+
+    def __str__(self):
+        return f"{self.course}-{self.learner}"
+
+#Course Rating and Review
+class CourseRating(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    learner = models.ForeignKey(Learner,on_delete=models.CASCADE)
+    rating = models.PositiveBigIntegerField(default=0)
+    reviews = models.TextField(null=True)
+    review_time=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.course}-{self.learner}-{self.rating}"
