@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework import generics
 from rest_framework import permissions
-from .serializers import CourseRatingSerializer, TutorSerializer, TutorDashboardSerializer, CategorySerializer, CourseSerializer, ChapterSerializer,LearnerSerializer, LearnerCourseEnrollSerializer
+from .serializers import CourseRatingSerializer, LearnerFavouriteCourseSerializer, TutorSerializer, TutorDashboardSerializer, CategorySerializer, CourseSerializer, ChapterSerializer,LearnerSerializer, LearnerCourseEnrollSerializer
 from . import models
 class TutorList(generics.ListCreateAPIView):
    queryset = models.Tutor.objects.all()
@@ -40,6 +40,12 @@ class CategoryList(generics.ListCreateAPIView):
    queryset = models.CourseCategory.objects.all()
    serializer_class = CategorySerializer
 
+
+
+
+
+
+
 #Course
 class CourseList(generics.ListCreateAPIView):
    queryset = models.Course.objects.all()
@@ -60,11 +66,17 @@ class CourseList(generics.ListCreateAPIView):
          tutor = self.request.GET['tutor']
          tutor = models.Tutor.objects.filter(id=tutor).first()
          qs = models.Course.objects.filter(techs__icontains=skill_name, tutor=tutor)
-         
-      if 'course_id' in self.kwargs:
-         course_id = self.kwargs['course_id']
-         course = models.Course.objects.get(pk=course_id)
-         return models.LearnerCourseEnrollment.objects.filter(course=course)
+
+      elif 'learnerId' in self.kwargs:
+         learner_id = self.kwargs['learnerId']
+         learner = models.Learner.objects.get(pk=learner_id)
+         print(learner.interested_subjects)
+         queries = [Q(techs__iendswith=value) for value in learner.interested_subjects]
+         query = queries.pop()
+         for item in queries:
+            query |= item
+         qs = models.Course.objects.filter(query)
+         return qs 
       return qs
 
 
@@ -139,11 +151,40 @@ class LearnerEnrollCourseList(generics.ListCreateAPIView):
    queryset=models.LearnerCourseEnrollment.objects.all()
    serializer_class=LearnerCourseEnrollSerializer
 
+class LearnerFavouriteCourseList(generics.ListCreateAPIView):
+   queryset=models.LearnerFavouriteCourse.objects.all()
+   serializer_class=LearnerFavouriteCourseSerializer
+
+   def get_queryset(self):
+      if 'learner_id' in self.kwargs:
+         learner_id = self.kwargs['learner_id']
+         learner = models.Learner.objects.get(pk=learner_id)
+         return models.LearnerFavouriteCourse.objects.filter(learner=learner).distinct()
+
+
 def fetch_enroll_status(request, learner_id, course_id):
    learner = models.Learner.objects.filter(id=learner_id).first()
    course= models.Course.objects.filter(id=course_id).first()
    enrollStatus=models.LearnerCourseEnrollment.objects.filter(course=course,learner=learner).count()
    if enrollStatus:
+      return JsonResponse({'bool':True})
+   else:
+      return JsonResponse({'bool':False})
+
+def fetch_favourite_status(request, learner_id, course_id):
+   learner = models.Learner.objects.filter(id=learner_id).first()
+   course= models.Course.objects.filter(id=course_id).first()
+   favouriteStatus=models.LearnerFavouriteCourse.objects.filter(course=course,learner=learner).first()
+   if favouriteStatus:
+      return JsonResponse({'bool':True})
+   else:
+      return JsonResponse({'bool':False})
+
+def remove_favourite_course(request, learner_id, course_id):
+   learner = models.Learner.objects.filter(id=learner_id).first()
+   course= models.Course.objects.filter(id=course_id).first()
+   favouriteStatus=models.LearnerFavouriteCourse.objects.filter(course=course,learner=learner).delete()
+   if favouriteStatus:
       return JsonResponse({'bool':True})
    else:
       return JsonResponse({'bool':False})

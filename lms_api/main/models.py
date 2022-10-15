@@ -131,13 +131,28 @@ class LearnerCourseEnrollment(models.Model):
     def __str__(self):
         return f"{self.course}-{self.learner}"
 
+#Learner Favourite Course
+class LearnerFavouriteCourse(models.Model):
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural ="7. Learner Favourite Courses"
+
+    def __str__(self):
+        return f"{self.course}-{self.learner}"
+
 #Course Rating and Review
 class CourseRating(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    learner = models.ForeignKey(Learner,on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    learner = models.ForeignKey(Learner,on_delete=models.CASCADE, null=True)
     rating = models.PositiveBigIntegerField(default=0)
     reviews = models.TextField(null=True)
     review_time=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural ="8. Learner Favourite Courses"
 
     def __str__(self):
         return f"{self.course}-{self.learner}-{self.rating}"

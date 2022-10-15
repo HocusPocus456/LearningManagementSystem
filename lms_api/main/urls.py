@@ -41,8 +41,13 @@ urlpatterns = [
     path('fetch-enrolled-learners/<int:course_id>',views.EnrolledLearnerList.as_view()),
     path('fetch-enrolled-courses/<int:learner_id>',views.EnrolledLearnerList.as_view()),
     path('fetch-recommended-courses/<int:learnerId>',views.CourseList.as_view()),
-    path('course-rating/', views.CourseRatingList.as_view()),
     path('fetch-rating-status/<int:learner_id>/<int:course_id>',views.fetch_rating_status),
+    path('course-rating/', views.CourseRatingList.as_view()),
+    path('learner-add-favourite-course/', views.LearnerFavouriteCourseList.as_view()),    
+    path('learner-remove-favourite-course/<int:course_id>/<int:learner_id>', views.remove_favourite_course),
+    path('fetch-favourite-status/<int:learner_id>/<int:course_id>',views.fetch_favourite_status),
+    path('fetch-favourite-courses/<int:learner_id>',views.LearnerFavouriteCourseList.as_view()),
+
 
 
 ]
